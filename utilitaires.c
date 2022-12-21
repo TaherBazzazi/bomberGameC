@@ -57,16 +57,21 @@ void clearScreen()
 void afficher_plateau(bomber_t bomber) {
 	int i,j;
     system("cls");
+
+    printf("%d ; %d \n",bomber.posl,bomber.posc );
 	for (i=0;i<bomber.lignes;i++){
         for (j=0;j<bomber.colonnes;j++){
             if(bomber.plateau[i][j] == 0)
                 printf(" ");
             else if(bomber.plateau[i][j] == 1)
                 printf("#");
+            else if(bomber.plateau[i][j] == 4)
+                printf("O");
             else if(bomber.plateau[i][j] == 2)
                 printf("B");
             else if(bomber.plateau[i][j] == 3)
                 printf("X");
+
 
         }
         printf("\n");
@@ -77,6 +82,16 @@ void afficher_plateau(bomber_t bomber) {
  * Placer l'étoile dans une case choisie aléatoirement
  * en évitant les ases obstacles.
  */
+void placer_obstacles(bomber_t *bomber) {
+
+int c,l;
+    do{
+        c=(int)(rand()% bomber->colonnes);
+        l=(int)(rand()% bomber->lignes);
+    }while(bomber->plateau[l][c] == 1);
+
+    bomber->plateau[c][l]=3;
+}
 
 void placer_bomber(bomber_t *bomber) {
     int c,l;
@@ -86,8 +101,7 @@ void placer_bomber(bomber_t *bomber) {
     }while(bomber->plateau[l][c] == 1);
     bomber->posc=c;
     bomber->posl=l;
-    bomber->plateau[l][c]=2;
-
+    bomber->plateau[bomber->posl][bomber->posc]=2;
 
 }
 

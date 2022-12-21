@@ -29,7 +29,7 @@ typedef struct{
 } bomber_t;
 
 void * lire_clavier(void *arg);
-void lire_plateau(char *fichier,star_t *star);
+void lire_plateau(char *fichier,bomber_t *bomber);
 void clearScreen();
-void afficher_plateau(star_t star);
-void placer_star(bomber_t *bomber);
+void afficher_plateau(bomber_t bomber);
+void placer_bomber(bomber_t *bomber);
