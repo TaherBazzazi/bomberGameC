@@ -54,11 +54,11 @@ void clearScreen()
  * Afficher le plateau sur l'écran en remplaçant 1 par '#'
  * 0 par ' ' et 2 par '*'
  */
-void afficher_plateau(bomber_t bomber) {
+void afficher_plateau(bomber_t bomber,player_t player) {
 	int i,j;
     system("cls");
 
-    printf("%d ; %d ; %d ; %d ; %d \n",bomber.posl,bomber.posc, bomber.score, bomber.alive, game_fini(bomber));
+    printf("cords %d ; %d ;nb_obs %d ;nb_bomb %d ;alive %d ;jeu_fini %d \n",player.posl,player.posc, player.score,player.nb_bombe,player.alive, game_fini(bomber));
 	for (i=0;i<bomber.lignes;i++){
         for (j=0;j<bomber.colonnes;j++){
             if(bomber.plateau[i][j] == 0)
@@ -71,6 +71,8 @@ void afficher_plateau(bomber_t bomber) {
                 printf("B");
             else if(bomber.plateau[i][j] == 3)
                 printf("X");
+            else if(bomber.plateau[i][j] == 5)
+                printf("P");
 
 
         }
@@ -93,19 +95,22 @@ int c,l;
     bomber->plateau[l][c]=3;}
 }
 
-void placer_bomber(bomber_t *bomber) {
+void placer_bomber(bomber_t *bomber,player_t *player,int n) {
     int c,l;
     do{
         c=(int)(rand()% bomber->colonnes);
         l=(int)(rand()% bomber->lignes);
     }while(bomber->plateau[l][c] == 1);
-    bomber->posc=c;
-    bomber->posl=l;
-    bomber->plateau[bomber->posl][bomber->posc]=2;
+    player->posc=c;
+    player->posl=l;
+    if ( n==1)
+    bomber->plateau[player->posl][player->posc]=2;
+    if ( n==2)
+    bomber->plateau[player->posl][player->posc]=5;
 
 }
 
-void expo_bombe(bomber_t *bomber,int n){
+void expo_bombe(bomber_t *bomber,player_t *player,int n){
     int i,j;
     for (i=0;i<bomber->lignes;i++){
         for (j=0;j<bomber->colonnes;j++){
@@ -117,18 +122,18 @@ void expo_bombe(bomber_t *bomber,int n){
             if(bomber->plateau[i+k][j] != 1 &&bomber->plateau[i+1][j] != 1 ){
 
             if(bomber->plateau[i+k][j] == 3 )
-                bomber->score++;
+                player->score++;
             if(bomber->plateau[i+k][j] == 2 )
-                bomber->alive=0;
+                player->alive=0;
 
              bomber->plateau[i+k][j]=0;}}
 
             if(i-k>0 ){
             if (bomber->plateau[i-k][j] != 1 &&bomber->plateau[i-1][j] != 1 ){
             if( bomber->plateau[i-k][j] == 3)
-                bomber->score++;
+                player->score++;
              if( bomber->plateau[i-k][j] == 2)
-                bomber->alive=0;
+                player->alive=0;
 
                 bomber->plateau[i-k][j]=0;}
                 }
@@ -140,18 +145,18 @@ void expo_bombe(bomber_t *bomber,int n){
             if(bomber->plateau[i][j+k] != 1 && bomber->plateau[i][j+1] != 1)
                 {
                 if(bomber->plateau[i][j+k] == 3)
-                   bomber->score++;
+                   player->score++;
                 if(bomber->plateau[i][j+k] == 2)
-                   bomber->alive=0;
+                   player->alive=0;
                    bomber->plateau[i][j+k]=0;
                 }}
 
                 if (j-k>0){
                 if ( bomber->plateau[i][j-k] != 1 && bomber->plateau[i][j-1] != 1 ){
                  if(bomber->plateau[i][j-k] == 3)
-                   bomber->score++;
+                   player->score++;
                 if(bomber->plateau[i][j-k] == 2)
-                    bomber->alive=0;
+                    player->alive=0;
                 bomber->plateau[i][j-k]=0;
                 }}
             }
@@ -168,7 +173,7 @@ return 1;
 }
 
 
-void enregistrer(char *fichier,bomber_t bomber){
+/*void enregistrer(char *fichier,bomber_t bomber){
     time_t now;
     time(&now);
     FILE *f;
@@ -182,6 +187,6 @@ void enregistrer(char *fichier,bomber_t bomber){
 
     fclose(f);
 
-}
+}*/
 
 

@@ -3,60 +3,64 @@ pthread_mutex_t dmutex = PTHREAD_MUTEX_INITIALIZER;
 
 
  void *lire_clavier(void *arg){
-    bomber_t * bomber = (bomber_t *)arg;
+    data_t * data = (data_t *)arg;
+
+    printf("%d ; %d ; %d ; %d ; %d \n",data->player->posl,data->player->posc,data->player->score,data->player->alive, game_fini(*data->bomber));
     char c;
-    while(bomber->alive && !game_fini(*bomber) ) {
+    while(data->player->alive && !game_fini(*data->bomber) ) {
         if (_kbhit()) {
             c = _getch();
                if (c == ' ')
             {    pthread_mutex_lock(&dmutex);
-                bomber->plateau[bomber->posl][bomber->posc]= 4;
-                bomber->nb_bombe++;
+                data->bomber->plateau[data->player->posl][data->player->posc]= 4;
+                data->player->nb_bombe++;
 
             }
 
-             else if (c=='z'&& bomber->plateau[bomber->posl-1][bomber->posc]== 0) {
-                    if (bomber->plateau[bomber->posl][bomber->posc]!= 4)
-                bomber->plateau[bomber->posl][bomber->posc]= 0;
-                bomber->posl = bomber->posl-1;
-                        bomber->plateau[bomber->posl][bomber->posc]= 2;
+             else if (c==72&& data->bomber->plateau[data->player->posl-1][data->player->posc]== 0) {
+                    if (data->bomber->plateau[data->player->posl][data->player->posc]!= 4)
+                data->bomber->plateau[data->player->posl][data->player->posc]= 0;
+                data->player->posl =data->player->posl-1;
+                        data->bomber->plateau[data->player->posl][data->player->posc]= 2;
 
             }
-            else if (c == 's'&& bomber->plateau[bomber->posl+1][bomber->posc]== 0) {
-                    if (bomber->plateau[bomber->posl][bomber->posc]!= 4)
-                bomber->plateau[bomber->posl][bomber->posc]= 0;
-                 bomber->posl = bomber->posl+1;
-                         bomber->plateau[bomber->posl][bomber->posc]= 2;
+            else if (c == 80&& data->bomber->plateau[data->player->posl+1][data->player->posc]== 0) {
+                    if (data->bomber->plateau[data->player->posl][data->player->posc]!= 4)
+                data->bomber->plateau[data->player->posl][data->player->posc]= 0;
+                 data->player->posl = data->player->posl+1;
+                         data->bomber->plateau[data->player->posl][data->player->posc]= 2;
 
             }
 
-            else if (c == 'd'&& bomber->plateau[bomber->posl][bomber->posc+1]!= 1 && bomber->plateau[bomber->posl][bomber->posc+1]!= 3 && bomber->plateau[bomber->posl][bomber->posc+1]!= 4) {
-                if (bomber->plateau[bomber->posl][bomber->posc]!= 4)
-                    bomber->plateau[bomber->posl][bomber->posc]= 0;
-                if (bomber->posc+1== 33)
+            else if ( c == 77 && data->bomber->plateau[data->player->posl][data->player->posc+1]!= 1 && data->bomber->plateau[data->player->posl][data->player->posc+1]!= 3
+                     && data->bomber->plateau[data->player->posl][data->player->posc+1]!= 4) {
+                if (data->bomber->plateau[data->player->posl][data->player->posc]!= 4)
+                    data->bomber->plateau[data->player->posl][data->player->posc]= 0;
+                if (data->player->posc+1== 33)
                 {
-                    bomber->posc = 0;
+                    data->player->posc = 0;
 
 }
                 else {
-                bomber->posc = bomber->posc+1;
+                data->player->posc = data->player->posc+1;
 
 }
-            bomber->plateau[bomber->posl][bomber->posc]= 2;
+            data->bomber->plateau[data->player->posl][data->player->posc]= 2;
             }
 
-            else if (c == 'q'&& bomber->plateau[bomber->posl][bomber->posc-1]!= 1 && bomber->plateau[bomber->posl][bomber->posc-1]!= 3 && bomber->plateau[bomber->posl][bomber->posc-1]!= 4) {
-            if (bomber->plateau[bomber->posl][bomber->posc]!= 4)
-                bomber->plateau[bomber->posl][bomber->posc]= 0;
+            else if (c == 75&& data->bomber->plateau[data->player->posl][data->player->posc-1]!= 1 && data->bomber->plateau[data->player->posl][data->player->posc-1]!= 3
+                     && data->bomber->plateau[data->player->posl][data->player->posc-1]!= 4) {
+            if (data->bomber->plateau[data->player->posl][data->player->posc]!= 4)
+                data->bomber->plateau[data->player->posl][data->player->posc]= 0;
 
-                 if (bomber->posc-1== -1)
+                 if (data->player->posc-1== -1)
                 {
-                    bomber->posc = 32;
+                    data->player->posc = 32;
 }
                 else {
-                bomber->posc = bomber->posc-1;
+                data->player->posc = data->player->posc-1;
 }
-            bomber->plateau[bomber->posl][bomber->posc]= 2;
+            data->bomber->plateau[data->player->posl][data->player->posc]= 2;
             }
 
 
@@ -71,13 +75,15 @@ pthread_mutex_t dmutex = PTHREAD_MUTEX_INITIALIZER;
 
 
 void *deplacer_bomber(void *arg) {
-    bomber_t * bomber = (bomber_t *)arg;
 
-    while(bomber->alive && !game_fini(*bomber)) {
+    data_t * data = (data_t *)arg;
+
+
+    while(data->player->alive && !game_fini(*data->bomber)) {
         //pthread_mutex_lock(&dmutex);
 
 
-        afficher_plateau(*bomber);
+        afficher_plateau(*data->bomber,*data->player);
 
         //pthread_mutex_unlock(&dmutex);
 
@@ -86,39 +92,47 @@ void *deplacer_bomber(void *arg) {
 }
 void *explo(void *arg) {
 
-     bomber_t * bomber = (bomber_t *)arg;
-    while (bomber->alive && !game_fini(*bomber)){
-expo_bombe(bomber,2);
+    data_t * data = (data_t *)arg;
+
+
+    //printf("%d ; %d ; %d ; %d ; %d \n",player->posl,player->posc, player->score, player->alive, game_fini(*bomber));
+    while (data->player->alive && !game_fini(*data->bomber)){
+    expo_bombe(data->bomber,data->player,2);
 Sleep(100);
     }
 }
 
 int main() {
+    data_t data;
     bomber_t bomber;
+    player_t player;
+    data.bomber=&bomber;
+    data.player=&player;
+
     time_t now;
     time(&now);
- pthread_t anim,clavier,bombe;
+    pthread_t anim,clavier,bombe;
     srand(time(0));
-    bomber.alive=1;
-    bomber.score=0;
-    bomber.nb_bombe=0;
+
+    player.alive=1;
+    player.score=0;
+    player.nb_bombe=0;
 
 	lire_plateau("C:\\Users\\abgad\\OneDrive\\Documents\\projetC\\plateau.txt",&bomber);
-	//placer_obstacles(&bomber);
-    placer_bomber(&bomber);
+
+    placer_bomber(&bomber,&player,1);
+    placer_bomber(&bomber,&player,2);
     placer_obstacles(&bomber);
 
-    //afficher_plateau(bomber);
-
-    pthread_create(&anim,NULL,deplacer_bomber,&bomber);
-    pthread_create(&clavier,NULL,lire_clavier,&bomber);
-    pthread_create(&bombe,NULL,explo,&bomber);
+    pthread_create(&anim,NULL,deplacer_bomber,&data);
+    pthread_create(&clavier,NULL,lire_clavier,&data);
+    pthread_create(&bombe,NULL,explo,&data);
     pthread_join(anim,NULL);
 
     printf("donnez votre nom \n");
-    scanf("%s",&bomber.nom);
-    printf("score de : %.2f par %s le %s",(float)(bomber.score/bomber.nb_bombe),bomber.nom,  ctime(&now));
-    enregistrer("C:\\Users\\abgad\\OneDrive\\Documents\\projetC\\score.txt",bomber);
+    scanf("%s",&player.nom);
+    printf("score de : %.2f par %s le %s",((float)player.score/(float)player.nb_bombe),player.nom,  ctime(&now));
+    //enregistrer("C:\\Users\\abgad\\OneDrive\\Documents\\projetC\\score.txt",bomber);
 	return 0;
 
 	//il ya bug dans le score
