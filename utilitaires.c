@@ -58,7 +58,7 @@ void afficher_plateau(bomber_t bomber) {
 	int i,j;
     system("cls");
 
-    printf("%d ; %d \n",bomber.posl,bomber.posc );
+    printf("%d ; %d ; %d ; %d ; %d \n",bomber.posl,bomber.posc, bomber.score, bomber.alive, game_fini(bomber));
 	for (i=0;i<bomber.lignes;i++){
         for (j=0;j<bomber.colonnes;j++){
             if(bomber.plateau[i][j] == 0)
@@ -83,14 +83,14 @@ void afficher_plateau(bomber_t bomber) {
  * en évitant les ases obstacles.
  */
 void placer_obstacles(bomber_t *bomber) {
-
+for (int i=0;i < 3;i++){
 int c,l;
     do{
-        c=(int)(rand()% bomber->colonnes);
+        c=(int)(rand()%bomber->colonnes);
         l=(int)(rand()% bomber->lignes);
-    }while(bomber->plateau[l][c] == 1);
+    }while( bomber->plateau[l][c] == 1);
 
-    bomber->plateau[c][l]=3;
+    bomber->plateau[l][c]=3;}
 }
 
 void placer_bomber(bomber_t *bomber) {
@@ -104,4 +104,84 @@ void placer_bomber(bomber_t *bomber) {
     bomber->plateau[bomber->posl][bomber->posc]=2;
 
 }
+
+void expo_bombe(bomber_t *bomber,int n){
+    int i,j;
+    for (i=0;i<bomber->lignes;i++){
+        for (j=0;j<bomber->colonnes;j++){
+            if(bomber->plateau[i][j] == 4 ){
+                sleep(n);
+
+            for (int k=0; k<n+1;k++){
+                if(i+k<bomber->lignes  ){
+            if(bomber->plateau[i+k][j] != 1 &&bomber->plateau[i+1][j] != 1 ){
+
+            if(bomber->plateau[i+k][j] == 3 )
+                bomber->score++;
+            if(bomber->plateau[i+k][j] == 2 )
+                bomber->alive=0;
+
+             bomber->plateau[i+k][j]=0;}}
+
+            if(i-k>0 ){
+            if (bomber->plateau[i-k][j] != 1 &&bomber->plateau[i-1][j] != 1 ){
+            if( bomber->plateau[i-k][j] == 3)
+                bomber->score++;
+             if( bomber->plateau[i-k][j] == 2)
+                bomber->alive=0;
+
+                bomber->plateau[i-k][j]=0;}
+                }
+
+            }
+
+            for (int k=0; k<n+1;k++){
+                if(j+k<bomber->colonnes  ){
+            if(bomber->plateau[i][j+k] != 1 && bomber->plateau[i][j+1] != 1)
+                {
+                if(bomber->plateau[i][j+k] == 3)
+                   bomber->score++;
+                if(bomber->plateau[i][j+k] == 2)
+                   bomber->alive=0;
+                   bomber->plateau[i][j+k]=0;
+                }}
+
+                if (j-k>0){
+                if ( bomber->plateau[i][j-k] != 1 && bomber->plateau[i][j-1] != 1 ){
+                 if(bomber->plateau[i][j-k] == 3)
+                   bomber->score++;
+                if(bomber->plateau[i][j-k] == 2)
+                    bomber->alive=0;
+                bomber->plateau[i][j-k]=0;
+                }}
+            }
+} }}}
+
+int game_fini(bomber_t bomber){
+int i,j;
+    for (i=0;i<bomber.lignes;i++){
+        for (j=0;j<bomber.colonnes;j++){
+            if(bomber.plateau[i][j] == 3 ){
+               return 0;
+            }}}
+return 1;
+}
+
+
+void enregistrer(char *fichier,bomber_t bomber){
+    time_t now;
+    time(&now);
+    FILE *f;
+    f = fopen(fichier,"a");
+    if (f == NULL){
+        printf("Je ne peux pas ouvrir le fichier d'enregistrement %s\n",fichier);
+        exit(-1);
+    }
+
+    fprintf(f,"score de : %.2f par %s le %s",(float)(bomber.score/bomber.nb_bombe),bomber.nom,  ctime(&now));
+
+    fclose(f);
+
+}
+
 
