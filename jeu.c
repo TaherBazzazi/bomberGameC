@@ -274,7 +274,7 @@ void *lire_clavier(void *arg){
             }
 
              else if (c=='z'&& data->bomber->plateau[data->player2->posl-1][data->player2->posc]== 0) {
-                    if (data->bomber->plateau[data->player2->posl][data->player2->posc]!= 4){
+                    if (data->bomber->plateau[data->player2->posl][data->player2->posc]!= 6){
                 pthread_mutex_lock(&dmutex);
                 data->bomber->plateau[data->player2->posl][data->player2->posc]= 0;
                 pthread_mutex_unlock(&dmutex);}
@@ -286,7 +286,7 @@ void *lire_clavier(void *arg){
 
             }
             else if (c == 's'&& data->bomber->plateau[data->player2->posl+1][data->player2->posc]== 0) {
-                    if (data->bomber->plateau[data->player2->posl][data->player2->posc]!= 4){
+                    if (data->bomber->plateau[data->player2->posl][data->player2->posc]!= 6){
                 pthread_mutex_lock(&dmutex);
                 data->bomber->plateau[data->player2->posl][data->player2->posc]= 0;
                 pthread_mutex_unlock(&dmutex);}
@@ -362,18 +362,20 @@ void *deplacer_bomber(void *arg) {
 }
 void *explo(void *arg) {
 
-    data_t * data = (data_t *)arg;
-    while (data->player->alive && !game_fini(*data->bomber)){
-    expo_bombe(data->bomber,data->player,2);
+    data_score * data = (data_score *)arg;
+    while (data->player->alive&& data->player2->alive && !game_fini(*data->bomber)){
+    expo_bombe(data->bomber,data->player,data->player2,2);
 Sleep(100);
     }
 }
 
 void *explo2(void *arg) {
 
-    data_t * data = (data_t *)arg;
-    while (data->player->alive && !game_fini(*data->bomber)){
-    expo_bombe2(data->bomber,data->player,2);
+    data_score * data = (data_score *)arg;
+    while (data->player->alive && !game_fini(*data->bomber)&& data->player2->alive){
+
+    expo_bombe2(data->bomber,data->player2,data->player,2);
+
 Sleep(100);
     }
 }
@@ -421,25 +423,25 @@ int main() {
 
 
     pthread_create(&clavier,NULL,lire_clavier,&datas);
-    pthread_create(&bombe,NULL,explo,&data);
-    pthread_create(&bombe2,NULL,explo2,&data2);
+    pthread_create(&bombe,NULL,explo,&datas);
+    pthread_create(&bombe2,NULL,explo2,&datas);
     //pthread_join(clavier,NULL);
     pthread_join(anim,NULL);
 
     //pthread_join(anim,NULL);
 
     printf("donnez votre joueur 1 \n");
-    scanf("%s",&player2.nom);
-    printf("donnez votre joueur 2 \n");
     scanf("%s",&player.nom);
+    printf("donnez votre joueur 2 \n");
+    scanf("%s",&player2.nom);
 
     if (player.alive==1 && player2.alive==1){
-        if (player.score>player2.score)
+        if (player.score >>  player2.score)
             printf("%s a gagné par le score de %.2f",player.nom,((float)player.score/(float)player.nb_bombe));
         else
             printf("%s a gagné par le score de %.2f",player2.nom,((float)player2.score/(float)player2.nb_bombe));
     }
-    else if (player.alive == 0)
+    else if (player2.alive == 0)
         printf("%s a gagné par le score de %.2f",player.nom,((float)player.score/(float)player.nb_bombe));
     else
         printf("%s a gagné par le score de %.2f",player2.nom,((float)player2.score/(float)player2.nb_bombe));

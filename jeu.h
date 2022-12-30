@@ -49,8 +49,9 @@ void clearScreen();
 void afficher_plateau(bomber_t bomber,player_t player,player_t player2);
 //void placer_bomber(bomber_t *bomber);
 void placer_bomber(bomber_t *bomber,player_t *player,int n);
-void expo_bombe(bomber_t *bomber,player_t *player,int n);
+void expo_bombe(bomber_t *bomber,player_t *player,player_t *player2,int n);
+
 int game_fini(bomber_t bomber);
 void enregistrer(char *fichier,bomber_t bomber);
 void *explo(void *arg) ;
-void expo_bombe2(bomber_t *bomber,player_t *player,int n);
+void expo_bombe2(bomber_t *bomber,player_t *player,player_t *player2,int n);

@@ -89,7 +89,7 @@ void afficher_plateau(bomber_t bomber,player_t player,player_t player2) {
  * en évitant les ases obstacles.
  */
 void placer_obstacles(bomber_t *bomber) {
-for (int i=0;i < 3;i++){
+for (int i=0;i < 20;i++){
 int c,l;
     do{
         c=(int)(rand()%bomber->colonnes);
@@ -114,7 +114,7 @@ void placer_bomber(bomber_t *bomber,player_t *player,int n) {
 
 }
 
-void expo_bombe(bomber_t *bomber,player_t *player,int n){
+void expo_bombe(bomber_t *bomber,player_t *player,player_t *player2,int n){
     int i,j;
     for (i=0;i<bomber->lignes;i++){
         for (j=0;j<bomber->colonnes;j++){
@@ -129,6 +129,8 @@ void expo_bombe(bomber_t *bomber,player_t *player,int n){
                 player->score++;
             if(bomber->plateau[i+k][j] == 2 )
                 player->alive=0;
+            if(bomber->plateau[i+k][j] == 5 )
+                player2->alive=0;
 
              bomber->plateau[i+k][j]=0;}}
 
@@ -136,8 +138,10 @@ void expo_bombe(bomber_t *bomber,player_t *player,int n){
             if (bomber->plateau[i-k][j] != 1 &&bomber->plateau[i-1][j] != 1 ){
             if( bomber->plateau[i-k][j] == 3)
                 player->score++;
-             if( bomber->plateau[i-k][j] == 2)
+            if( bomber->plateau[i-k][j] == 2)
                 player->alive=0;
+            if(bomber->plateau[i-k][j] == 5 )
+                player2->alive=0;
 
                 bomber->plateau[i-k][j]=0;}
                 }
@@ -152,6 +156,8 @@ void expo_bombe(bomber_t *bomber,player_t *player,int n){
                    player->score++;
                 if(bomber->plateau[i][j+k] == 2)
                    player->alive=0;
+                if(bomber->plateau[i][j+k] == 5)
+                    player2->alive=0;
                    bomber->plateau[i][j+k]=0;
                 }}
 
@@ -161,12 +167,14 @@ void expo_bombe(bomber_t *bomber,player_t *player,int n){
                    player->score++;
                 if(bomber->plateau[i][j-k] == 2)
                     player->alive=0;
+                if(bomber->plateau[i][j-k] == 5 )
+                    player2->alive=0;
                 bomber->plateau[i][j-k]=0;
                 }}
             }
 } }}}
 
-void expo_bombe2(bomber_t *bomber,player_t *player,int n){
+void expo_bombe2(bomber_t *bomber,player_t *player,player_t *player2,int n){
     int i,j;
     for (i=0;i<bomber->lignes;i++){
         for (j=0;j<bomber->colonnes;j++){
@@ -181,6 +189,8 @@ void expo_bombe2(bomber_t *bomber,player_t *player,int n){
                 player->score++;
             if(bomber->plateau[i+k][j] == 5 )
                 player->alive=0;
+            if(bomber->plateau[i+k][j] == 2 )
+                player2->alive=0;
 
              bomber->plateau[i+k][j]=0;}}
 
@@ -188,8 +198,10 @@ void expo_bombe2(bomber_t *bomber,player_t *player,int n){
             if (bomber->plateau[i-k][j] != 1 &&bomber->plateau[i-1][j] != 1 ){
             if( bomber->plateau[i-k][j] == 3)
                 player->score++;
-             if( bomber->plateau[i-k][j] == 5)
+            if( bomber->plateau[i-k][j] == 5)
                 player->alive=0;
+            if(bomber->plateau[i-k][j] == 2 )
+                player2->alive=0;
 
                 bomber->plateau[i-k][j]=0;}
                 }
@@ -204,6 +216,9 @@ void expo_bombe2(bomber_t *bomber,player_t *player,int n){
                    player->score++;
                 if(bomber->plateau[i][j+k] == 5)
                    player->alive=0;
+                if(bomber->plateau[i][j+k] == 2 )
+                player2->alive=0;
+
                    bomber->plateau[i][j+k]=0;
                 }}
 
@@ -213,6 +228,9 @@ void expo_bombe2(bomber_t *bomber,player_t *player,int n){
                    player->score++;
                 if(bomber->plateau[i][j-k] == 5)
                     player->alive=0;
+                if(bomber->plateau[i][j-k] == 2 )
+                player2->alive=0;
+
                 bomber->plateau[i][j-k]=0;
                 }}
             }
