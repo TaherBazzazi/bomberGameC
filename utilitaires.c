@@ -54,15 +54,19 @@ void clearScreen()
  * Afficher le plateau sur l'écran en remplaçant 1 par '#'
  * 0 par ' ' et 2 par '*'
  */
-void afficher_plateau(bomber_t bomber,player_t player) {
+void afficher_plateau(bomber_t bomber,player_t player,player_t player2) {
 	int i,j;
     system("cls");
 
-    printf("cords %d ; %d ;nb_obs %d ;nb_bomb %d ;alive %d ;jeu_fini %d \n",player.posl,player.posc, player.score,player.nb_bombe,player.alive, game_fini(bomber));
+    //printf("cords %d ; %d ;nb_obs %d ;nb_bomb %d ;alive %d ;jeu_fini %d \n",player.posl,player.posc, player.score,player.nb_bombe,player.alive, game_fini(bomber));
+	printf("joueur1 nb bombe: %d     joueur1 score: %d\n",player.nb_bombe,player.score);
+	printf("joueur2 nb bombe: %d     joueur2 score: %d\n",player2.nb_bombe,player2.score);
 	for (i=0;i<bomber.lignes;i++){
         for (j=0;j<bomber.colonnes;j++){
             if(bomber.plateau[i][j] == 0)
                 printf(" ");
+            else if(bomber.plateau[i][j] == 6)
+                printf("o");
             else if(bomber.plateau[i][j] == 1)
                 printf("#");
             else if(bomber.plateau[i][j] == 4)
@@ -162,6 +166,59 @@ void expo_bombe(bomber_t *bomber,player_t *player,int n){
             }
 } }}}
 
+void expo_bombe2(bomber_t *bomber,player_t *player,int n){
+    int i,j;
+    for (i=0;i<bomber->lignes;i++){
+        for (j=0;j<bomber->colonnes;j++){
+            if(bomber->plateau[i][j] == 6 ){
+                sleep(n);
+
+            for (int k=0; k<n+1;k++){
+                if(i+k<bomber->lignes  ){
+            if(bomber->plateau[i+k][j] != 1 &&bomber->plateau[i+1][j] != 1 ){
+
+            if(bomber->plateau[i+k][j] == 3 )
+                player->score++;
+            if(bomber->plateau[i+k][j] == 5 )
+                player->alive=0;
+
+             bomber->plateau[i+k][j]=0;}}
+
+            if(i-k>0 ){
+            if (bomber->plateau[i-k][j] != 1 &&bomber->plateau[i-1][j] != 1 ){
+            if( bomber->plateau[i-k][j] == 3)
+                player->score++;
+             if( bomber->plateau[i-k][j] == 5)
+                player->alive=0;
+
+                bomber->plateau[i-k][j]=0;}
+                }
+
+            }
+
+            for (int k=0; k<n+1;k++){
+                if(j+k<bomber->colonnes  ){
+            if(bomber->plateau[i][j+k] != 1 && bomber->plateau[i][j+1] != 1)
+                {
+                if(bomber->plateau[i][j+k] == 3)
+                   player->score++;
+                if(bomber->plateau[i][j+k] == 5)
+                   player->alive=0;
+                   bomber->plateau[i][j+k]=0;
+                }}
+
+                if (j-k>0){
+                if ( bomber->plateau[i][j-k] != 1 && bomber->plateau[i][j-1] != 1 ){
+                 if(bomber->plateau[i][j-k] == 3)
+                   player->score++;
+                if(bomber->plateau[i][j-k] == 5)
+                    player->alive=0;
+                bomber->plateau[i][j-k]=0;
+                }}
+            }
+} }}}
+
+
 int game_fini(bomber_t bomber){
 int i,j;
     for (i=0;i<bomber.lignes;i++){
@@ -183,7 +240,7 @@ return 1;
         exit(-1);
     }
 
-    fprintf(f,"score de : %.2f par %s le %s",(float)(bomber.score/bomber.nb_bombe),bomber.nom,  ctime(&now));
+    fprintf(f,"score de : %.2f par %s le %s",((float)bomber.score/(float)bomber.nb_bombe),bomber.nom,  ctime(&now));
 
     fclose(f);
 
