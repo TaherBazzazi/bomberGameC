@@ -116,8 +116,6 @@ void *lire_clavier2(void *arg){
 		}
 		strcpy(data->player2->nom,buf);
 
-		//print details of the client/peer and the data received
-
 
 		//now reply the client with the same data
 		if (sendto(s, buf, recv_len, 0, (struct sockaddr*) &si_other, slen) == SOCKET_ERROR)
@@ -208,6 +206,10 @@ void *lire_clavier2(void *arg){
         buf[298]='0'+data->player->alive;
         buf[299]='0'+data->player2->alive;
         buf[300]='0'+game_fini(*data->bomber);
+        buf[301]='0'+data->player->score;
+        buf[302]='0'+data->player->nb_bombe;
+        buf[303]='0'+data->player2->score;
+        buf[304]='0'+data->player2->nb_bombe;
         for (int i = 0; i <data->bomber->lignes ; i++) {
                 for (int j=0; j <data->bomber->colonnes ; j++){
         buf[1+i*data->bomber->colonnes+j] ='0'+data->bomber->plateau[i][j];
@@ -216,31 +218,28 @@ void *lire_clavier2(void *arg){
 
         sendto(s, buf, BUFLEN, 0, (struct sockaddr*) &si_other, slen);
 
-
-
-        /*int arrayToSend[data->bomber->lignes][data->bomber->colonnes];
-        for (int i = 0; i <data->bomber->lignes ; i++) {
-                for (int j=0; i <data->bomber->colonnes ; j++)
-        arrayToSend[i][j] = data->bomber->plateau[i][j];*/
-
         }
-
-
-
+        system("cls");
+         printf( "\n\n\n\n\n\n\n\n\n\n" );
+         system("cls");
     if (data->player->alive==1 && data->player2->alive==1){
         if (data->player->score >>  data->player2->score)
-            printf("%s a gagne par le score de %.2f",data->player->nom,((float)data->player->score/(float)data->player->nb_bombe));
+            {printf("%s a gagne par le score de %.2f",data->player->nom,((float)data->player->score/(float)data->player->nb_bombe));
+               strcpy(buf,data->player->nom);
+            }
         else
-            printf("%s a gagne par le score de %.2f",data->player2->nom,((float)data->player2->score/(float)data->player2->nb_bombe));
+            {printf("%s a gagne par le score de %.2f",data->player2->nom,((float)data->player2->score/(float)data->player2->nb_bombe));
+            strcpy(buf,data->player2->nom);}
     }
     else if (data->player2->alive == 0)
-        printf("%s a gagne par le score de %.2f",data->player->nom,((float)data->player->score/(float)data->player->nb_bombe));
+        {printf("%s a gagne par le score de %.2f",data->player->nom,((float)data->player->score/(float)data->player->nb_bombe));
+        strcpy(buf,data->player->nom); }
     else
-        printf("%s a gagne par le score de %.2f",data->player2->nom,((float)data->player2->score/(float)data->player2->nb_bombe));
-
-    strcpy(buf,"jeu fini");
+        {printf("%s a gagne par le score de %.2f",data->player2->nom,((float)data->player2->score/(float)data->player2->nb_bombe));
+            strcpy(buf,data->player2->nom);}
+    //strcpy(buf,"jeu fini");
     sendto(s, buf, BUFLEN, 0, (struct sockaddr*) &si_other, slen);
-     // pthread_mutex_unlock(&dmutex);
+    // pthread_mutex_unlock(&dmutex);
     Sleep(50);
 
  }
@@ -282,38 +281,6 @@ Sleep(100);
     }
 }
 
-void *cnx(void *arg){
-    SOCKET * s = (SOCKET *)arg;
-
-	int slen , recv_len;
-	char buf[BUFLEN];
-	struct sockaddr_in si_other;
-	slen = sizeof(si_other) ;
-
-        printf("Waiting for data...");
-		fflush(stdout);
-
-		//clear the buffer by filling null, it might have previously received data
-		memset(buf,'\0', BUFLEN);
-
-		//try to receive some data, this is a blocking call
-		if ((recv_len = recvfrom(s, buf, BUFLEN, 0, (struct sockaddr *) &si_other, &slen)) == SOCKET_ERROR)
-		{
-			printf("recvfrom() failed with error code : %d" , WSAGetLastError());
-			//exit(EXIT_FAILURE);
-		}
-
-		//print details of the client/peer and the data received
-		printf("Received packet from %s:%d\n", inet_ntoa(si_other.sin_addr), ntohs(si_other.sin_port));
-		printf("Data: %s\n" , buf);
-
-		//now reply the client with the same data
-		if (sendto(s, buf, recv_len, 0, (struct sockaddr*) &si_other, slen) == SOCKET_ERROR)
-		{
-			printf("sendto() failed with error code : %d" , WSAGetLastError());
-			//exit(EXIT_FAILURE);
-		}
-}
 
 int main() {
     SOCKET s;
@@ -399,7 +366,6 @@ int main() {
     pthread_create(&clavier2,NULL,lire_clavier2,&datas);
     pthread_create(&bombe,NULL,explo,&datas);
     pthread_create(&bombe2,NULL,explo2,&datas);
-    //pthread_create(&udp,NULL,cnx,&s);
     pthread_join(clavier2,NULL);
 
     //pthread_join(anim,NULL);

@@ -1,8 +1,8 @@
 # depslib dependency file v1.0
-1672675339 source:c:\users\abgad\onedrive\documents\projetc\utilitaires.c
+1672696371 source:c:\users\abgad\onedrive\documents\projetc\utilitaires.c
 	"jeu.h"
 
-1672652403 c:\users\abgad\onedrive\documents\projetc\jeu.h
+1672696384 c:\users\abgad\onedrive\documents\projetc\jeu.h
 	<stdio.h>
 	<stdlib.h>
 	<string.h>
@@ -13,6 +13,6 @@
 	<windows.h>
 	<conio.h>
 
-1672674880 source:c:\users\abgad\onedrive\documents\projetc\jeu - joueur1.c
+1672681027 source:c:\users\abgad\onedrive\documents\projetc\jeu - joueur1.c
 	"jeu.h"
 

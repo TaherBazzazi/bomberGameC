@@ -66,19 +66,24 @@ void *lire_clavier(void *arg){
         data->player->alive=(int)(buf[298]-'0');
         data->player2->alive=(int)(buf[299]-'0');
 
-    afficher_plateau_client(*data->bomber);
-    printf("\n %d", data->player->alive);
-    printf("\n %d", data->player2->alive);
+        data->player->score=(int)(buf[301]-'0');
+        data->player->nb_bombe=(int)(buf[302]-'0');
+        data->player2->score=(int)(buf[303]-'0');
+        data->player2->nb_bombe=(int)(buf[304]-'0');
+
+    afficher_plateau_client(*data->bomber,*data->player,*data->player2);
+
 
     }
        // pthread_mutex_unlock(&dmutex);
 
-    /*if (recvfrom(s, buf, BUFLEN, 0, (struct sockaddr *) &si_other, &slen) == SOCKET_ERROR)
+    if (recvfrom(s, buf, BUFLEN, 0, (struct sockaddr *) &si_other, &slen) == SOCKET_ERROR)
 		{
 			printf("recvfrom() failed with error code : %d" , WSAGetLastError());
 			//exit(EXIT_FAILURE);
-		}*/
-		printf("done");
+		}
+
+		printf("%s a gagne",buf);
     Sleep(200);
 
 
@@ -120,38 +125,6 @@ Sleep(100);
     }
 }
 
-/*void *cnx(void *arg){
-    int * s = (int *)arg;
-    struct sockaddr_in si_other;
-    int slen=sizeof(si_other);
-	char buf[BUFLEN];
-	char message[BUFLEN];
-
-
-	printf("Enter message : ");
-		//gets(message);
-
-		//send the message
-		if (sendto(s, message, strlen(message) , 0 , (struct sockaddr *) &si_other, slen) == SOCKET_ERROR)
-		{
-			printf("sendto() failed with error code : %d" , WSAGetLastError());
-			//exit(EXIT_FAILURE);
-		}
-
-		//receive a reply and print it
-		//clear the buffer by filling null, it might have previously received data
-		memset(buf,'\0', BUFLEN);
-		//try to receive some data, this is a blocking call
-		if (recvfrom(s, buf, BUFLEN, 0, (struct sockaddr *) &si_other, &slen) == SOCKET_ERROR)
-		{
-			printf("recvfrom() failed with error code : %d" , WSAGetLastError());
-			//exit(EXIT_FAILURE);
-		}
-
-		puts(buf);
-
-}*/
-
 
 int main() {
 
@@ -174,9 +147,6 @@ int main() {
 		exit(EXIT_FAILURE);
 	}
 
-
-
-
     data_t data;
     data_t data2;
     data_rec_t datas;
@@ -196,8 +166,6 @@ int main() {
     datas.player2=&player2;
     datas.s=s;
 
-
-
     time_t now;
     time(&now);
     pthread_t anim,clavier,bombe,bombe2,clavier2,udp;
@@ -212,33 +180,20 @@ int main() {
     player2.nb_bombe=0;
 	lire_plateau("C:\\Users\\abgad\\OneDrive\\Documents\\projetC\\plateau.txt",&bomber);
 
-    //placer_bomber(&bomber,&player,1);
-    //placer_bomber(&bomber,&player2,2);
-    //placer_obstacles(&bomber);
-
-    //pthread_create(&anim,NULL,deplacer_bomber,&datas);
-   /*pthread_create(&clavier,NULL,lire_clavier,&data);
-
-    pthread_create(&clavier2,NULL,lire_clavier2,&data2);*/
 
     pthread_create(&clavier,NULL,lire_clavier,&datas);
-    //pthread_create(&bombe,NULL,explo,&datas);
-    //pthread_create(&bombe2,NULL,explo2,&datas);
-    //pthread_create(&udp,NULL,cnx,&s);
-    //pthread_join(clavier,NULL);
     pthread_join(clavier,NULL);
 
     //pthread_join(anim,NULL);
 
 
 
-    printf("done");
 
+    while (1);
     //printf("score de : %.2f par %s le %s",((float)player.score/(float)player.nb_bombe),player.nom,  ctime(&now));
     //enregistrer("C:\\Users\\abgad\\OneDrive\\Documents\\projetC\\score.txt",bomber);
 	closesocket(s);
 	WSACleanup();
 	return 0;
 
-	//il ya bug dans le score
 }

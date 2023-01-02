@@ -59,8 +59,8 @@ void afficher_plateau(bomber_t bomber,player_t player,player_t player2) {
     system("cls");
 
     //printf("cords %d ; %d ;nb_obs %d ;nb_bomb %d ;alive %d ;jeu_fini %d \n",player.posl,player.posc, player.score,player.nb_bombe,player.alive, game_fini(bomber));
-	printf("joueur1 nb bombe: %d     joueur1 score: %d\n",player.nb_bombe,player.score);
-	printf("joueur2 nb bombe: %d     joueur2 score: %d\n",player2.nb_bombe,player2.score);
+	printf("joueur1 nb bombe: %d joueur1 score: %d\n",player.nb_bombe,player.score);
+	printf("joueur2 nb bombe: %d joueur2 score: %d\n",player2.nb_bombe,player2.score);
 	for (i=0;i<bomber.lignes;i++){
         for (j=0;j<bomber.colonnes;j++){
             if(bomber.plateau[i][j] == 0)
@@ -83,10 +83,11 @@ void afficher_plateau(bomber_t bomber,player_t player,player_t player2) {
         printf("\n");
 	}
 }
-void afficher_plateau_client(bomber_t bomber) {
+void afficher_plateau_client(bomber_t bomber,player_t player,player_t player2) {
 	int i,j;
     system("cls");
-
+    printf("joueur1 nb bombe: %d joueur1 score: %d\n",player.nb_bombe,player.score);
+	printf("joueur2 nb bombe: %d joueur2 score: %d\n",player2.nb_bombe,player2.score);
 	for (i=0;i<bomber.lignes;i++){
         for (j=0;j<bomber.colonnes;j++){
             if(bomber.plateau[i][j] == 0)
