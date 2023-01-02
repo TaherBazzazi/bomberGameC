@@ -1,0 +1,18 @@
+# depslib dependency file v1.0
+1672675339 source:c:\users\abgad\onedrive\documents\projetc\utilitaires.c
+	"jeu.h"
+
+1672652403 c:\users\abgad\onedrive\documents\projetc\jeu.h
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	<time.h>
+	<unistd.h>
+	<pthread.h>
+	<winsock2.h>
+	<windows.h>
+	<conio.h>
+
+1672674880 source:c:\users\abgad\onedrive\documents\projetc\jeu - joueur1.c
+	"jeu.h"
+

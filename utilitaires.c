@@ -83,6 +83,33 @@ void afficher_plateau(bomber_t bomber,player_t player,player_t player2) {
         printf("\n");
 	}
 }
+void afficher_plateau_client(bomber_t bomber) {
+	int i,j;
+    system("cls");
+
+	for (i=0;i<bomber.lignes;i++){
+        for (j=0;j<bomber.colonnes;j++){
+            if(bomber.plateau[i][j] == 0)
+                printf(" ");
+            else if(bomber.plateau[i][j] == 6)
+                printf("o");
+            else if(bomber.plateau[i][j] == 1)
+                printf("#");
+            else if(bomber.plateau[i][j] == 4)
+                printf("O");
+            else if(bomber.plateau[i][j] == 2)
+                printf("B");
+            else if(bomber.plateau[i][j] == 3)
+                printf("X");
+            else if(bomber.plateau[i][j] == 5)
+                printf("P");
+            else
+                printf("s");
+
+        }
+        printf("\n");
+	}
+}
 
 /*
  * Placer l'étoile dans une case choisie aléatoirement
