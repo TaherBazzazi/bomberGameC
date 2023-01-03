@@ -51,11 +51,13 @@ pthread_mutex_t dmutex = PTHREAD_MUTEX_INITIALIZER;
                         pthread_mutex_lock(&dmutex);
                     data->bomber->plateau[data->player->posl][data->player->posc]= 0;
                     pthread_mutex_unlock(&dmutex);}
-                if (data->player->posc+1== 33)
+                if (data->player->posc+1== 33&& data->bomber->plateau[data->player->posl][0]==0)
                 {
                     data->player->posc = 0;
 
-            }
+                }
+                else if(data->player->posc+1== 33 && data->bomber->plateau[data->player->posl][0]!=0)
+                    data->player->posc = 32;
                 else {
                 data->player->posc = data->player->posc+1;
 
@@ -72,10 +74,12 @@ pthread_mutex_t dmutex = PTHREAD_MUTEX_INITIALIZER;
                 data->bomber->plateau[data->player->posl][data->player->posc]= 0;
                 pthread_mutex_unlock(&dmutex);}
 
-                 if (data->player->posc-1== -1)
+                 if (data->player->posc-1== -1 && data->bomber->plateau[data->player->posl][32]==0)
                 {
                     data->player->posc = 32;
                 }
+                else if(data->player->posc-1== -1 && data->bomber->plateau[data->player->posl][32]!=0)
+                    data->player->posc = 0;
                 else {
                 data->player->posc = data->player->posc-1;
                 }
@@ -170,15 +174,16 @@ void *lire_clavier2(void *arg){
                         pthread_mutex_lock(&dmutex);
                     data->bomber->plateau[data->player2->posl][data->player2->posc]= 0;
                     pthread_mutex_unlock(&dmutex);}
-                if (data->player2->posc+1== 33)
+                if (data->player2->posc+1== 33 && data->bomber->plateau[data->player2->posl][0]==0)
                 {
                     data->player2->posc = 0;
-
                 }
+                else if(data->player2->posc+1== 33 && data->bomber->plateau[data->player2->posl][0]!=0)
+                    data->player2->posc = 32;
                 else {
                 data->player2->posc = data->player2->posc+1;
-
                 }
+
                 pthread_mutex_lock(&dmutex);
             data->bomber->plateau[data->player2->posl][data->player2->posc]= 5;
             pthread_mutex_unlock(&dmutex);
@@ -192,13 +197,16 @@ void *lire_clavier2(void *arg){
                 data->bomber->plateau[data->player2->posl][data->player2->posc]= 0;
                 pthread_mutex_unlock(&dmutex);}
 
-                 if (data->player2->posc-1== -1)
+                 if (data->player2->posc-1== -1 && data->bomber->plateau[data->player2->posl][32]==0)
                 {
                     data->player2->posc = 32;
-}
+                }
+                else if(data->player2->posc-1== -1 && data->bomber->plateau[data->player2->posl][32]!=0)
+                    data->player2->posc = 0;
                 else {
                 data->player2->posc = data->player2->posc-1;
-}           pthread_mutex_lock(&dmutex);
+                }
+            pthread_mutex_lock(&dmutex);
             data->bomber->plateau[data->player2->posl][data->player2->posc]= 5;
             pthread_mutex_unlock(&dmutex);
             }
@@ -217,11 +225,11 @@ void *lire_clavier2(void *arg){
         }
 
         sendto(s, buf, BUFLEN, 0, (struct sockaddr*) &si_other, slen);
-
         }
-        system("cls");
+        /*system("cls");
          printf( "\n\n\n\n\n\n\n\n\n\n" );
-         system("cls");
+         system("cls");*/
+        afficher_plateau(*data->bomber,*data->player,*data->player2);
     if (data->player->alive==1 && data->player2->alive==1){
         if (data->player->score >>  data->player2->score)
             {printf("%s a gagne par le score de %.2f",data->player->nom,((float)data->player->score/(float)data->player->nb_bombe));
@@ -240,7 +248,7 @@ void *lire_clavier2(void *arg){
     //strcpy(buf,"jeu fini");
     sendto(s, buf, BUFLEN, 0, (struct sockaddr*) &si_other, slen);
     // pthread_mutex_unlock(&dmutex);
-    Sleep(50);
+    Sleep(200);
 
  }
 
@@ -352,10 +360,10 @@ int main() {
 	lire_plateau("C:\\Users\\abgad\\OneDrive\\Documents\\projetC\\plateau.txt",&bomber);
 
 
+
+    placer_obstacles(&bomber);
     placer_bomber(&bomber,&player,1);
     placer_bomber(&bomber,&player2,2);
-    placer_obstacles(&bomber);
-
     pthread_create(&anim,NULL,deplacer_bomber,&datas);
    //pthread_create(&clavier,NULL,lire_clavier,&data);
 

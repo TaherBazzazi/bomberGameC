@@ -1,7 +1,6 @@
 #include "jeu.h"
 pthread_mutex_t dmutex = PTHREAD_MUTEX_INITIALIZER;
 
-
 void *lire_clavier(void *arg){
     data_rec_t * data = (data_rec_t *)arg;
 
@@ -9,8 +8,10 @@ void *lire_clavier(void *arg){
     struct sockaddr_in si_other;
     int slen=sizeof(si_other);
 	char buf[BUFLEN];
+
 	char message[BUFLEN];
 	char c;
+
     //int arrayToSend[data->bomber->lignes][data->bomber->colonnes];
     memset((char *) &si_other, 0, sizeof(si_other));
 	si_other.sin_family = AF_INET;
@@ -71,7 +72,9 @@ void *lire_clavier(void *arg){
         data->player2->score=(int)(buf[303]-'0');
         data->player2->nb_bombe=(int)(buf[304]-'0');
 
-    afficher_plateau_client(*data->bomber,*data->player,*data->player2);
+
+        afficher_plateau_client(*data->bomber,*data->player,*data->player2);
+
 
 
     }
@@ -84,7 +87,7 @@ void *lire_clavier(void *arg){
 		}
 
 		printf("%s a gagne",buf);
-    Sleep(200);
+    Sleep(500);
 
 
  }
@@ -168,7 +171,7 @@ int main() {
 
     time_t now;
     time(&now);
-    pthread_t anim,clavier,bombe,bombe2,clavier2,udp;
+    pthread_t anim,clavier;
     srand(time(0));
 
     player.alive=1;
@@ -185,9 +188,6 @@ int main() {
     pthread_join(clavier,NULL);
 
     //pthread_join(anim,NULL);
-
-
-
 
     while (1);
     //printf("score de : %.2f par %s le %s",((float)player.score/(float)player.nb_bombe),player.nom,  ctime(&now));

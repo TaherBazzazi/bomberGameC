@@ -120,8 +120,8 @@ void placer_obstacles(bomber_t *bomber) {
 for (int i=0;i < 20;i++){
 int c,l;
     do{
-        c=(int)(rand()%bomber->colonnes);
-        l=(int)(rand()% bomber->lignes);
+        c=(int)(1+(rand()%(bomber->colonnes-2)));
+        l=(int)(1+(rand()%(bomber->lignes-2)));
     }while( bomber->plateau[l][c] == 1);
 
     bomber->plateau[l][c]=3;}
@@ -132,7 +132,7 @@ void placer_bomber(bomber_t *bomber,player_t *player,int n) {
     do{
         c=(int)(rand()% bomber->colonnes);
         l=(int)(rand()% bomber->lignes);
-    }while(bomber->plateau[l][c] == 1);
+    }while(bomber->plateau[l][c] != 0);
     player->posc=c;
     player->posl=l;
     if ( n==1)
@@ -160,7 +160,8 @@ void expo_bombe(bomber_t *bomber,player_t *player,player_t *player2,int n){
             if(bomber->plateau[i+k][j] == 5 )
                 player2->alive=0;
 
-             bomber->plateau[i+k][j]=0;}}
+             bomber->plateau[i+k][j]=0;}
+             }
 
             if(i-k>0 ){
             if (bomber->plateau[i-k][j] != 1 &&bomber->plateau[i-1][j] != 1 ){
@@ -187,7 +188,8 @@ void expo_bombe(bomber_t *bomber,player_t *player,player_t *player2,int n){
                 if(bomber->plateau[i][j+k] == 5)
                     player2->alive=0;
                    bomber->plateau[i][j+k]=0;
-                }}
+                }
+                }
 
                 if (j-k>0){
                 if ( bomber->plateau[i][j-k] != 1 && bomber->plateau[i][j-1] != 1 ){
